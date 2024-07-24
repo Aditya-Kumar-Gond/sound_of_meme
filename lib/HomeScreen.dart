@@ -99,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                'Be the fullutime paid member',
+                                'Be the full time paid member',
                                 style: TextStyle(
                                   fontFamily: Constants.customFont,
                                   color: Colors.blue[900],
@@ -166,8 +166,8 @@ class HomeScreen extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        width: 100,
-                        height: 100,
+                        width: 150,
+                        height: 150,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
@@ -175,7 +175,7 @@ class HomeScreen extends StatelessWidget {
                         child: Center(
                           child: Icon(
                             Icons.add,
-                            size: 50,
+                            size: 70,
                             color: Colors.blue[900],
                           ),
                         ),

@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sound_of_meme/Constants.dart';
+import 'package:sound_of_meme/Subscription.dart';
+import 'package:sound_of_meme/Subscription2.dart';
 
 class CustomDialogBox extends StatelessWidget {
   @override
@@ -11,15 +15,15 @@ class CustomDialogBox extends StatelessWidget {
       child: SingleChildScrollView(
         child: Container(
           height: 360,
-          padding: EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Color(0xFF343434),
+            color: const Color(0xFF343434),
             borderRadius: BorderRadius.circular(25.0),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
+              const Text(
                 'Submit your song here!',
                 style: TextStyle(
                   fontFamily: Constants.customFont,
@@ -51,19 +55,19 @@ class CustomDialogBox extends StatelessWidget {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
+                  Navigator.of(context).pop();
                   showDialog(
                     context: context,
                     barrierDismissible: false,
                     builder: (BuildContext context) {
                       return ProgressDialog();
+                    //  Navigator.of(context).pop();
                     },
                   );
-                  Navigator.of(context).pop();
-                  // Simulate a download process
-                  Future.delayed(Duration(seconds: 10), () {
-                    Navigator.of(context).pop(); // Close the progress dialog
-                    // Close the custom dialog box
-                  });
+
+                  // Future.delayed(Duration(seconds: 10), () {
+                  //   Navigator.of(context).pop();
+                  // });
         
                 },
                 child: Center(child: Text('Create',style: TextStyle(fontFamily: Constants.customFont,color: Colors.black,fontSize: 20),)),
@@ -84,7 +88,37 @@ class CustomDialogBox extends StatelessWidget {
   }
 }
 
-class ProgressDialog extends StatelessWidget {
+class ProgressDialog extends StatefulWidget {
+  @override
+  _ProgressDialogState createState() => _ProgressDialogState();
+}
+
+class _ProgressDialogState extends State<ProgressDialog> {
+  double progress = 0.0;
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        progress += 0.05; // Update progress by 5% each second
+        if (progress >= 1.0) {
+          timer.cancel();
+          Navigator.push(context, MaterialPageRoute(builder: (context){
+            return SubscriptionScreen2();
+          })); // Close the custom dialog box
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -96,14 +130,19 @@ class ProgressDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            CircularProgressIndicator(),
+            CircularProgressIndicator(value: progress),
             SizedBox(height: 16.0),
-            Text(
-              'Downloading...',
-              style: TextStyle(fontSize: 18.0),
+            const Text(
+              'Creating...',
+              style: TextStyle(fontSize: 18.0,fontFamily: Constants.customFont),
             ),
             SizedBox(height: 8.0),
-            Text('Please wait while we complete your download.'),
+            LinearProgressIndicator(value: progress),
+            SizedBox(height: 8.0),
+            Text('${(progress * 100).toStringAsFixed(0)}%'),
+            SizedBox(height: 8.0),
+            Text('Please wait while we create your song!',style: TextStyle(fontFamily: Constants.customFont),),
+            SizedBox(height: 8,)
           ],
         ),
       ),
